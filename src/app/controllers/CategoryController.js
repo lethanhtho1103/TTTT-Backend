@@ -13,7 +13,10 @@ class CategoryController {
       await newCategory.save();
       return res
         .status(200)
-        .json({ message: `Category created successfully: ${name}.` });
+        .json({
+          message: `Category created successfully: ${name}.`,
+          data: newCategory,
+        });
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }

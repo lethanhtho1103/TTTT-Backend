@@ -14,8 +14,16 @@ const Product = new Schema({
     type: Number,
     required: true,
   },
-  category: {
-    type: mongoose.Schema.Type.ObjectId, ref: "Category"
+  quantity: {
+    type: Number,
+  },
+  image: {
+    type: String,
+    default: "",
+  },
+  category_id: {
+    type: mongoose.Types.ObjectId,
+    ref: "Category",
   },
 });
 
