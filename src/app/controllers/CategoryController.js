@@ -1,5 +1,6 @@
 const Category = require("../models/Category");
 const Accessory = require("../models/Accessory");
+const Product = require("../models/Product");
 
 class CategoryController {
   async createCategory(req, res, next) {
@@ -35,7 +36,38 @@ class CategoryController {
   async getAllCategories(req, res) {
     try {
       const categories = await Category.find();
-      return res.status(200).json(categories);
+      const categoriesWithProducts = await Promise.all(
+        categories.map(async (category) => {
+          const categories = await Product.find({
+            category_id: category._id,
+          });
+          return {
+            ...category._doc,
+            categories,
+          };
+        })
+      );
+
+      return res.status(200).json(categoriesWithProducts);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+
+  async getCategoryById(req, res) {
+    try {
+      const categoryId = req.params.id;
+      const category = await Category.findById(categoryId);
+      if (!category) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+      const products = await Product.find({ category_id: category._id });
+      const categoryWithProducts = {
+        ...category._doc,
+        products,
+      };
+
+      return res.status(200).json(categoryWithProducts);
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }

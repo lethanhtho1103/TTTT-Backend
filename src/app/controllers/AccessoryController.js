@@ -1,4 +1,5 @@
 const Accessory = require("../models/Accessory");
+const Category = require("../models/Category");
 
 class AccessoryController {
   async createAccessory(req, res, next) {
@@ -22,8 +23,39 @@ class AccessoryController {
 
   async getAllAccessory(req, res) {
     try {
-      const accessory = await Accessory.find();
-      return res.status(200).json(accessory);
+      const accessories = await Accessory.find();
+      const accessoriesWithCategories = await Promise.all(
+        accessories.map(async (accessory) => {
+          const categories = await Category.find({
+            accessory_id: accessory._id,
+          });
+          return {
+            ...accessory._doc,
+            categories,
+          };
+        })
+      );
+
+      // Return the result
+      return res.status(200).json(accessoriesWithCategories);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+
+  async getAccessoryById(req, res) {
+    try {
+      const accessoryId = req.params.id;
+      const accessory = await Accessory.findById(accessoryId);
+      if (!accessory) {
+        return res.status(404).json({ message: "Accessory not found" });
+      }
+      const categories = await Category.find({ accessory_id: accessory._id });
+      const accessoryWithCategories = {
+        ...accessory._doc,
+        categories,
+      };
+      return res.status(200).json(accessoryWithCategories);
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
