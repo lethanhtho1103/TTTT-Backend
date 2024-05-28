@@ -1,6 +1,7 @@
 const multer = require("multer");
 const Product = require("../models/Product");
 const storage = require("../../services/uploadImage");
+const Category = require("../models/Category");
 
 class ProductController {
   async createProduct(req, res, next) {
@@ -19,6 +20,12 @@ class ProductController {
           const category_id = req.body.category_id;
           const image = req.file.originalname;
           const existingProduct = await Product.findOne({ name });
+          if (category_id) {
+            const categoryExists = await Category.findById(category_id);
+            if (!categoryExists) {
+              return res.status(400).json({ message: "Invalid category_id" });
+            }
+          }
           if (existingProduct) {
             existingProduct.quantity += quantity;
             await existingProduct.save();
@@ -89,7 +96,12 @@ class ProductController {
           const quantity = parseInt(req.body.quantity, 10);
           const category_id = req.body.category_id;
           const image = req.file ? req.file.originalname : undefined;
-
+          if (category_id) {
+            const categoryExists = await Category.findById(category_id);
+            if (!categoryExists) {
+              return res.status(400).json({ message: "Invalid category_id" });
+            }
+          }
           const product = await Product.findById(productId);
           if (!product) {
             return res.status(404).json({ message: "Product not found" });
