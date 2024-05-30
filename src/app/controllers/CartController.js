@@ -9,14 +9,15 @@ class CartController {
       const quantity = parseInt(req.body.quantity, 10);
       const color = req.body.color;
 
-      let cart = await Cart.findOne({ user: userId });
+      let cart = await Cart.findOne({ user_id: userId });
 
       if (!cart) {
         cart = new Cart({ user_id: userId, items: [] });
       }
 
       const existingItemIndex = cart.items.findIndex(
-        (item) => item.product.toString() === productId && item.color === color
+        (item) =>
+          item.product_id.toString() === productId && item.color === color
       );
 
       if (existingItemIndex !== -1) {
