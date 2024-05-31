@@ -154,6 +154,80 @@ class OrderController {
       console.log("Error sending email confirmation:", error.message);
     }
   }
+
+  async getAllOrdersByUserId(req, res) {
+    const { userId } = req.params;
+    try {
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      const orders = await Order.find({ user_id: userId });
+      const ordersWithDetails = [];
+      for (const order of orders) {
+        const orderDetails = await OrderDetail.find({
+          order_id: order._id,
+        }).populate("product_id", "name price"); // Populate thêm thông tin sản phẩm
+
+        const orderWithDetails = {
+          ...order._doc,
+          orderDetails: orderDetails.map((detail) => ({
+            _id: detail._id,
+            product_id: detail.product_id._id,
+            product_name: detail.product_id.name,
+            unit_price: detail.unit_price,
+            quantity: detail.quantity,
+          })),
+        };
+        ordersWithDetails.push(orderWithDetails);
+      }
+
+      return res.status(200).json({
+        message: "Orders retrieved successfully",
+        data: ordersWithDetails,
+      });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+
+  async getAllOrders(req, res) {
+    try {
+      // Tìm tất cả các đơn hàng
+      const orders = await Order.find();
+
+      // Tạo một mảng để chứa tất cả các đơn hàng cùng với chi tiết đơn hàng của chúng
+      const ordersWithDetails = [];
+
+      for (const order of orders) {
+        // Tìm tất cả các chi tiết đơn hàng tương ứng với order_id
+        const orderDetails = await OrderDetail.find({
+          order_id: order._id,
+        }).populate("product_id", "name price"); // Populate thêm thông tin sản phẩm
+
+        // Kết hợp đơn hàng và chi tiết đơn hàng
+        const orderWithDetails = {
+          ...order._doc,
+          orderDetails: orderDetails.map((detail) => ({
+            _id: detail._id,
+            product_id: detail.product_id._id,
+            product_name: detail.product_id.name,
+            unit_price: detail.unit_price,
+            quantity: detail.quantity,
+          })),
+        };
+
+        ordersWithDetails.push(orderWithDetails);
+      }
+
+      return res.status(200).json({
+        message: "All orders retrieved successfully",
+        data: ordersWithDetails,
+      });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
 }
 
 module.exports = new OrderController();
