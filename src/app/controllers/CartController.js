@@ -7,7 +7,6 @@ class CartController {
       const userId = req.body.userId;
       const productId = req.body.productId;
       const quantity = parseInt(req.body.quantity, 10);
-      const color = req.body.color;
 
       let cart = await Cart.findOne({ user_id: userId });
 
@@ -16,14 +15,13 @@ class CartController {
       }
 
       const existingItemIndex = cart.items.findIndex(
-        (item) =>
-          item.product_id.toString() === productId && item.color === color
+        (item) => item.product_id.toString() === productId
       );
 
       if (existingItemIndex !== -1) {
         cart.items[existingItemIndex].quantity += quantity;
       } else {
-        cart.items.push({ product_id: productId, quantity, color });
+        cart.items.push({ product_id: productId, quantity });
       }
       await cart.save();
       return res.status(200).json({
