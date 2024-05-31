@@ -1,13 +1,22 @@
+const mongoose = require("mongoose");
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
 
 class CartController {
   async addToCart(req, res) {
     try {
-      const userId = req.body.userId;
-      const productId = req.body.productId;
-      const quantity = parseInt(req.body.quantity, 10);
-      const color = req.body.color;
+      const { userId, productId, quantity } = req.body;
+
+      // Validate userId and productId
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).json({ message: "Invalid userId" });
+      }
+      if (!mongoose.Types.ObjectId.isValid(productId)) {
+        return res.status(400).json({ message: "Invalid productId" });
+      }
+      if (!Number.isInteger(quantity) || quantity <= 0) {
+        return res.status(400).json({ message: "Invalid quantity" });
+      }
 
       let cart = await Cart.findOne({ user_id: userId });
 
@@ -16,15 +25,15 @@ class CartController {
       }
 
       const existingItemIndex = cart.items.findIndex(
-        (item) =>
-          item.product_id.toString() === productId && item.color === color
+        (item) => item.product_id.toString() === productId
       );
 
       if (existingItemIndex !== -1) {
         cart.items[existingItemIndex].quantity += quantity;
       } else {
-        cart.items.push({ product_id: productId, quantity, color });
+        cart.items.push({ product_id: productId, quantity });
       }
+
       await cart.save();
       return res.status(200).json({
         message: "Product added to cart successfully",
@@ -37,10 +46,14 @@ class CartController {
 
   async getCart(req, res) {
     try {
-      const userId = req.params.userId;
-      const cart = await Cart.findOne({ user: userId }).populate(
-        "items.product"
-      );
+      const { userId } = req.params;
+
+      // Validate userId
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).json({ message: "Invalid userId" });
+      }
+
+      const cart = await Cart.findOne({ user_id: userId }).populate("items.product_id");
 
       if (!cart) {
         return res.status(404).json({ message: "Cart not found" });
@@ -54,19 +67,27 @@ class CartController {
 
   async updateCartItem(req, res) {
     try {
-      const userId = req.body.userId;
-      const productId = req.body.productId;
-      const quantity = parseInt(req.body.quantity, 10);
-      const color = req.body.color;
+      const { userId, productId, quantity } = req.body;
 
-      let cart = await Cart.findOne({ user: userId });
+      // Validate userId and productId
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).json({ message: "Invalid userId" });
+      }
+      if (!mongoose.Types.ObjectId.isValid(productId)) {
+        return res.status(400).json({ message: "Invalid productId" });
+      }
+      if (!Number.isInteger(quantity) || quantity <= 0) {
+        return res.status(400).json({ message: "Invalid quantity" });
+      }
+
+      const cart = await Cart.findOne({ user_id: userId });
 
       if (!cart) {
         return res.status(404).json({ message: "Cart not found" });
       }
 
       const itemIndex = cart.items.findIndex(
-        (item) => item.product.toString() === productId && item.color === color
+        (item) => item.product_id.toString() === productId
       );
 
       if (itemIndex === -1) {
@@ -87,19 +108,24 @@ class CartController {
 
   async removeCartItem(req, res) {
     try {
-      const userId = req.body.userId;
-      const productId = req.body.productId;
-      const color = req.body.color;
+      const { userId, productId } = req.body;
 
-      let cart = await Cart.findOne({ user: userId });
+      // Validate userId and productId
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).json({ message: "Invalid userId" });
+      }
+      if (!mongoose.Types.ObjectId.isValid(productId)) {
+        return res.status(400).json({ message: "Invalid productId" });
+      }
+
+      const cart = await Cart.findOne({ user_id: userId });
 
       if (!cart) {
         return res.status(404).json({ message: "Cart not found" });
       }
 
       cart.items = cart.items.filter(
-        (item) =>
-          !(item.product.toString() === productId && item.color === color)
+        (item) => item.product_id.toString() !== productId
       );
 
       await cart.save();
