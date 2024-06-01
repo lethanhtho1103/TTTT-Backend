@@ -19,6 +19,7 @@ class ProductController {
           const quantity = parseInt(req.body.quantity, 10);
           const category_id = req.body.category_id;
           const image = req.file.originalname;
+          const specifications = req.body.specifications || null;
           const existingProduct = await Product.findOne({ name });
           if (category_id) {
             const categoryExists = await Category.findById(category_id);
@@ -41,6 +42,7 @@ class ProductController {
               quantity,
               category_id,
               image,
+              specifications,
             });
             await newProduct.save();
             return res.status(200).json({
@@ -96,6 +98,7 @@ class ProductController {
           const quantity = parseInt(req.body.quantity, 10);
           const category_id = req.body.category_id;
           const image = req.file ? req.file.originalname : undefined;
+          const specifications = req.body.specifications || null;
           if (category_id) {
             const categoryExists = await Category.findById(category_id);
             if (!categoryExists) {
@@ -112,6 +115,7 @@ class ProductController {
           if (quantity) product.quantity = quantity;
           if (category_id) product.category_id = category_id;
           if (image) product.image = image;
+          if (specifications) product.specifications = specifications;
 
           await product.save();
           return res.status(200).json({
