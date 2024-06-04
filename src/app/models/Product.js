@@ -29,7 +29,7 @@ const Product = new Schema({
     type: String,
   },
   cpu_type: {
-      type: String,
+    type: String,
   },
   ram: {
     type: String,
@@ -65,7 +65,7 @@ const Product = new Schema({
     type: String,
   },
   manufacturer: {
-    type:String,
+    type: String,
   },
   model: {
     type: String,
@@ -76,11 +76,11 @@ const Product = new Schema({
   brightness: {
     type: String,
   },
-   contrastRatio: {
+  contrastRatio: {
     type: String,
   },
   screenSize: {
-    type: String
+    type: String,
   },
   panelType: {
     type: String,
@@ -103,7 +103,7 @@ const Product = new Schema({
   recommendedResolution: {
     type: String,
   },
-  review : {
+  review: {
     type: String,
   },
   mainboard: {
@@ -130,7 +130,7 @@ const Product = new Schema({
   high: {
     type: String,
   },
-  mouseType:{
+  mouseType: {
     type: String,
   },
   utilities: {
@@ -139,8 +139,6 @@ const Product = new Schema({
   ergonomics: {
     type: String,
   },
-
-
 });
 
 module.exports = mongoose.model("Product", Product);

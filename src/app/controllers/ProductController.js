@@ -3,7 +3,6 @@ const Product = require("../models/Product");
 const storage = require("../../services/uploadImage");
 const Category = require("../models/Category");
 
-
 class ProductController {
   async createProduct(req, res, next) {
     const upload = multer({ storage: storage }).single("image");
@@ -38,7 +37,7 @@ class ProductController {
           const screenType = req.body.screenType || null;
           const brightness = req.body.brightness || null;
           const contrastRatio = req.body.contrastRatio || null;
-          const screenSize = req.body.screenSize ||null;
+          const screenSize = req.body.screenSize || null;
           const panelType = req.body.panelType || null;
           const viewingAngle = req.body.viewingAngle || null;
           const responseTime = req.body.responseTime || null;
@@ -50,7 +49,7 @@ class ProductController {
           const radiators = req.body.radiators || null;
           const hardDrive = req.body.hardDrive || null;
           const card = req.body.card || null;
-          const caseTower = req.body.caseTower ||  null;
+          const caseTower = req.body.caseTower || null;
           const psu = req.body.psu || null;
           const material = req.body.material || null;
           const high = req.body.high || null;
@@ -85,40 +84,39 @@ class ProductController {
               category_id,
               image,
               specifications,
-              // trường chitiet laptop 
+              // trường chitiet laptop
               cpu_type, // loai cpu
-              ram,  // RAM
+              ram, // RAM
               storage_capacity, //lưu trữ
               screen_size, //kích thước màn hình
               graphics, //đồ họa
-              
+
               // cả 2
               connectivity, //kết nối
 
-              mouse_keyboard, 
-              size,//kích thước
-              weight,//trọng lượng
-              color,//màu sắc
+              mouse_keyboard,
+              size, //kích thước
+              weight, //trọng lượng
+              color, //màu sắc
               warranty, //bảo hành
-              other_features,//các tính năng khác
+              other_features, //các tính năng khác
 
               // chi tiết của màng hình
-              
+
               manufacturer, //hãng sản xuất
               model, // mã sản phẩm
               screenType, //loại màn hình
-              brightness,//độ sáng
-              contrastRatio,//độ tương phản
-              screenSize,//kích thước màn hình
-              panelType,//tấm nén
-              viewingAngle,//
-              responseTime,//thời gian phản hồi
-              aspectRatio,//tỷ lệ màn hình
-              refreshRate,//tần số quét
-              recommendedResolution,// độ phân giải
-             
+              brightness, //độ sáng
+              contrastRatio, //độ tương phản
+              screenSize, //kích thước màn hình
+              panelType, //tấm nén
+              viewingAngle, //
+              responseTime, //thời gian phản hồi
+              aspectRatio, //tỷ lệ màn hình
+              refreshRate, //tần số quét
+              recommendedResolution, // độ phân giải
 
-              review,//bài viết đánh giá
+              review, //bài viết đánh giá
 
               //PC
               mainboard,
@@ -217,7 +215,7 @@ class ProductController {
           const screenType = req.body.screenType || null;
           const brightness = req.body.brightness || null;
           const contrastRatio = req.body.contrastRatio || null;
-          const screenSize = req.body.screenSize ||null;
+          const screenSize = req.body.screenSize || null;
           const panelType = req.body.panelType || null;
           const viewingAngle = req.body.viewingAngle || null;
           const responseTime = req.body.responseTime || null;
@@ -229,7 +227,7 @@ class ProductController {
           const radiators = req.body.radiators || null;
           const hardDrive = req.body.hardDrive || null;
           const card = req.body.card || null;
-          const caseTower = req.body.caseTower ||  null;
+          const caseTower = req.body.caseTower || null;
           const psu = req.body.psu || null;
           const material = req.body.material || null;
           const high = req.body.high || null;
@@ -283,8 +281,8 @@ class ProductController {
           if (responseTime) product.responseTime = responseTime;
           if (aspectRatio) product.aspectRatio = aspectRatio;
           if (refreshRate) product.refreshRate = refreshRate;
-          if (recommendedResolution) product.recommendedResolution = recommendedResolution;
-          
+          if (recommendedResolution)
+            product.recommendedResolution = recommendedResolution;
 
           if (review) product.review = review;
 

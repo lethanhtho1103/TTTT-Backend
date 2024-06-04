@@ -7,7 +7,6 @@ const order = require("./order");
 const google = require("./google");
 const facebook = require("./facebook");
 
-
 function route(app) {
   app.use("/api/authentication", auth);
   app.use("/api/accessory", accessory);

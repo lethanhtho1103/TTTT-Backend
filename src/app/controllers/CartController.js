@@ -53,7 +53,9 @@ class CartController {
         return res.status(400).json({ message: "Invalid userId" });
       }
 
-      const cart = await Cart.findOne({ user_id: userId }).populate("items.product_id");
+      const cart = await Cart.findOne({ user_id: userId }).populate(
+        "items.product_id"
+      );
 
       if (!cart) {
         return res.status(404).json({ message: "Cart not found" });
