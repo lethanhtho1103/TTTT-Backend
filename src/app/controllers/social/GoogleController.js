@@ -16,23 +16,25 @@ const configLoginWithGoogle = () => {
         const { failure, success } = await googleAuth.registerWithGoogle(
           profile
         );
+        const user = failure || success;
 
-        if (failure) {
-          console.log("Google user already exists in DB..", failure);
-          return done(failure, null);
-        } else {
-          const user = success;
-          const token = jwt.sign(
-            { userInfo: success.data },
-            process.env.JWT_ACCESS_TOKEN,
-            {
-              expiresIn: "1h",
-            }
+        if (user) {
+          console.log(
+            failure
+              ? "Google user already exists in DB.."
+              : "Google user registered successfully.",
+            user
           );
-
-          user.token = token; // Attach token to the user object
+          const token = jwt.sign(
+            { userInfo: user.data },
+            process.env.JWT_ACCESS_TOKEN,
+            { expiresIn: "1h" }
+          );
+          user.token = token;
           return done(null, user);
         }
+
+        return done(new Error("Unknown error during Google authentication"));
       }
     )
   );

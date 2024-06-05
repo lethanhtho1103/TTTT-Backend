@@ -10,6 +10,7 @@ const googleAuthDal = {
       const failure = {
         status: 400,
         message: "User already Registered.",
+        data: isUserExists,
       };
       return { failure };
     }
@@ -43,6 +44,7 @@ const googleAuthDal = {
       const failure = {
         status: 400,
         message: "User already Registered.",
+        data: isUserExists,
       };
       return { failure };
     }
@@ -66,20 +68,6 @@ const googleAuthDal = {
     };
     return { success };
   },
-
-  // loginUser: async (oauthUser) => {
-  //   const userExists = await User.findOne({ email: oauthUser.emails[0].value });
-  //   if (userExists) {
-  //     const success = {
-  //       message: 'User successfully logged In.',
-  //     };
-  //     return { success };
-  //   }
-  //   const failure = {
-  //     message: 'Email not Registered. You need to sign up first',
-  //   };
-  //   return { failure };
-  // },
 };
 
 module.exports = googleAuthDal;
