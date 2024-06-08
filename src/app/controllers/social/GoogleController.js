@@ -17,7 +17,6 @@ const configLoginWithGoogle = () => {
           profile
         );
         const user = failure || success;
-
         if (user) {
           console.log(
             failure
