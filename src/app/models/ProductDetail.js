@@ -6,7 +6,7 @@ const ProductDetail = new Schema({
     type: String,
   },
   cpu_type: {
-      type: String,
+    type: String,
   },
   ram: {
     type: String,
@@ -42,7 +42,7 @@ const ProductDetail = new Schema({
     type: String,
   },
   manufacturer: {
-    type:String,
+    type: String,
   },
   model: {
     type: String,
@@ -53,11 +53,11 @@ const ProductDetail = new Schema({
   brightness: {
     type: String,
   },
-   contrastRatio: {
+  contrastRatio: {
     type: String,
   },
   screenSize: {
-    type: String
+    type: String,
   },
   panelType: {
     type: String,
@@ -80,7 +80,7 @@ const ProductDetail = new Schema({
   recommendedResolution: {
     type: String,
   },
-  review : {
+  review: {
     type: String,
   },
   mainboard: {
@@ -107,7 +107,7 @@ const ProductDetail = new Schema({
   high: {
     type: String,
   },
-  mouseType:{
+  mouseType: {
     type: String,
   },
   utilities: {
