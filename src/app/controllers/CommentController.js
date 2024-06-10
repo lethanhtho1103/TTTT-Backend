@@ -7,43 +7,59 @@ const Comment = require("../models/Comment");
 class CommentController {
   async createComment(req, res) {
     const { user_id, product_id, star, content } = req.body;
+
     try {
-      const order = await Order.findOne({ user_id });
-      if (!order) {
+      // Find all orders by the user
+      const orders = await Order.find({ user_id });
+
+      if (!orders || orders.length === 0) {
         return res
           .status(400)
           .json({ message: "User has not placed any orders." });
       }
+
+      // Check if any of the OrderDetail documents linked to these orders contain the specified product_id
+      const orderIds = orders.map((order) => order._id);
       const orderDetail = await OrderDetail.findOne({
-        order_id: order._id,
+        order_id: { $in: orderIds },
         product_id,
       });
+
       if (!orderDetail) {
         return res
           .status(400)
           .json({ message: "User has not ordered this product." });
       }
+
+      // Check if a comment already exists for this product and user
       let existingComment = await Comment.findOne({
         user_id,
         product_id,
       });
+
       if (existingComment) {
+        // Update existing comment
         existingComment.star = star;
         existingComment.content = content;
         await existingComment.save();
+
+        // Recalculate the average star rating
         const comments = await Comment.find({ product_id });
         const averageStar =
           comments.reduce((acc, comment) => acc + comment.star, 0) /
           comments.length;
 
+        // Update the product with the new average star rating
         await Product.findByIdAndUpdate(product_id, {
           average_star: averageStar,
         });
+
         return res
           .status(200)
           .json({ message: "Comment updated successfully." });
       }
 
+      // Create a new comment
       const newComment = new Comment({
         user_id,
         product_id,
@@ -80,7 +96,10 @@ class CommentController {
       return res.status(400).json({ message: "Invalid product ID" });
     }
     try {
-      const comments = await Comment.find({ product_id });
+      const comments = await Comment.find({ product_id }).populate(
+        "user_id",
+        "username avatar"
+      );
       res.status(200).json(comments);
     } catch (error) {
       res.status(500).json({ message: "An error occurred.", error });
