@@ -206,7 +206,7 @@ class OrderController {
       for (const order of orders) {
         const orderDetails = await OrderDetail.find({
           order_id: order._id,
-        }).populate("product_id", "name price"); // Populate thêm thông tin sản phẩm
+        }).populate("product_id", "name price image"); // Populate thêm thông tin sản phẩm
 
         const orderWithDetails = {
           ...order._doc,
@@ -214,6 +214,7 @@ class OrderController {
             _id: detail._id,
             product_id: detail.product_id._id,
             product_name: detail.product_id.name,
+            product_image: detail.product_id.image,
             unit_price: detail.unit_price,
             quantity: detail.quantity,
           })),
@@ -242,7 +243,7 @@ class OrderController {
         // Tìm tất cả các chi tiết đơn hàng tương ứng với order_id
         const orderDetails = await OrderDetail.find({
           order_id: order._id,
-        }).populate("product_id", "name price"); // Populate thêm thông tin sản phẩm
+        }).populate("product_id", "name price image"); // Populate thêm thông tin sản phẩm
 
         // Kết hợp đơn hàng và chi tiết đơn hàng
         const orderWithDetails = {
@@ -251,6 +252,7 @@ class OrderController {
             _id: detail._id,
             product_id: detail.product_id._id,
             product_name: detail.product_id.name,
+            product_image: detail.product_id.image,
             unit_price: detail.unit_price,
             quantity: detail.quantity,
           })),

@@ -8,7 +8,7 @@ const Comment = new Schema({
   },
   product_id: {
     type: mongoose.Types.ObjectId,
-    ref: "User",
+    ref: "Product",
   },
   star: {
     type: Number,
