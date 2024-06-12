@@ -181,7 +181,7 @@ class ProductController {
     }
   }
 
-   async getProductsById(req, res) {
+  async getProductsById(req, res) {
     try {
       const productId = req.params.id;
       const product = await Product.findById(productId).populate("category_id");
@@ -295,7 +295,8 @@ class ProductController {
           if (responseTime) product.responseTime = responseTime;
           if (aspectRatio) product.aspectRatio = aspectRatio;
           if (refreshRate) product.refreshRate = refreshRate;
-          if (recommendedResolution)product.recommendedResolution = recommendedResolution;
+          if (recommendedResolution)
+            product.recommendedResolution = recommendedResolution;
 
           if (review) product.review = review;
 
@@ -340,6 +341,28 @@ class ProductController {
       return res.status(200).json({
         message: `Product deleted successfully: ${deletedProduct.name}.`,
       });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+
+  async getProductsByCriteria(req, res) {
+    try {
+      const { sortBy = "sold_quantity", order = "desc" } = req.query;
+      // Validate sorting criteria and order
+      const validSortBy = ["sold_quantity", "average_star", "price"];
+      if (!validSortBy.includes(sortBy)) {
+        return res.status(400).json({ message: "Invalid sortBy value" });
+      }
+      const validOrder = ["asc", "desc"];
+      if (!validOrder.includes(order)) {
+        return res.status(400).json({ message: "Invalid order value" });
+      }
+      const sortOrder = order === "asc" ? 1 : -1;
+      const products = await Product.find()
+        .sort({ [sortBy]: sortOrder })
+        .populate("category_id");
+      return res.status(200).json({ data: products });
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
