@@ -59,6 +59,7 @@ class OrderController {
           await newOrderDetail.save();
 
           product.quantity -= quantity;
+          product.sold_quantity += quantity; // Tăng số lượng đã bán
           await product.save();
 
           await Cart.updateOne(
@@ -111,6 +112,7 @@ class OrderController {
             await newOrderDetail.save();
 
             product.quantity -= quantity;
+            product.sold_quantity += quantity; // Tăng số lượng đã bán
             await product.save();
 
             await Cart.updateOne(
@@ -155,6 +157,7 @@ class OrderController {
         });
         await newOrderDetail.save();
         product.quantity -= quantity;
+        product.sold_quantity += quantity; // Tăng số lượng đã bán
         await product.save();
         savedOrder.total_price = productTotalPrice;
         await savedOrder.save();

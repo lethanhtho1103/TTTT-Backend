@@ -153,6 +153,7 @@ const Product = new Schema({
   },
   average_star: { type: Number, default: 0 },
   comment_count: { type: Number, default: 0 },
+  sold_quantity: { type: Number, default: 0 },
 });
 
 module.exports = mongoose.model("Product", Product);
