@@ -44,6 +44,64 @@ class CartController {
     }
   }
 
+  async addProductsToCart(req, res) {
+    try {
+      const { userId, products } = req.body;
+
+      // Validate userId
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).json({ message: "Invalid userId" });
+      }
+
+      // Validate products array
+      if (!Array.isArray(products) || products.length === 0) {
+        return res.status(400).json({ message: "Invalid products array" });
+      }
+
+      for (const product of products) {
+        const { productId, quantity } = product;
+
+        if (!mongoose.Types.ObjectId.isValid(productId)) {
+          return res
+            .status(400)
+            .json({ message: `Invalid productId: ${productId}` });
+        }
+        if (!Number.isInteger(quantity) || quantity <= 0) {
+          return res
+            .status(400)
+            .json({ message: `Invalid quantity for productId: ${productId}` });
+        }
+      }
+
+      let cart = await Cart.findOne({ user_id: userId });
+
+      if (!cart) {
+        cart = new Cart({ user_id: userId, items: [] });
+      }
+
+      for (const product of products) {
+        const { productId, quantity } = product;
+        const existingItemIndex = cart.items.findIndex(
+          (item) => item.product_id.toString() === productId
+        );
+
+        if (existingItemIndex !== -1) {
+          cart.items[existingItemIndex].quantity += quantity;
+        } else {
+          cart.items.push({ product_id: productId, quantity });
+        }
+      }
+
+      await cart.save();
+      return res.status(200).json({
+        message: "Products added to cart successfully",
+        data: cart,
+      });
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+
   async getCart(req, res) {
     try {
       const { userId } = req.params;
