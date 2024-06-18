@@ -8,7 +8,6 @@ const google = require("./google");
 const facebook = require("./facebook");
 const comment = require("./comment");
 const paypal = require("./paypal");
-const notification = require("./notification");
 
 function route(app) {
   app.use("/api/authentication", auth);
@@ -18,7 +17,6 @@ function route(app) {
   app.use("/api/order", order);
   app.use("/api/cart", cart);
   app.use("/api/comment", comment);
-  app.use("/api/notification", notification);
   app.use("/", facebook);
   app.use("/", google);
   app.use("/", paypal);

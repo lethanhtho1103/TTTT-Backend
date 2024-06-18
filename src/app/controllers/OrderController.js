@@ -197,7 +197,8 @@ class OrderController {
     }
   }
 
-   async notifyAdmin(order) {
+  // gửi thông báo cho admin
+  async notifyAdmin(order) {
     const adminEmail = "admin@example.com";
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -227,7 +228,7 @@ class OrderController {
       console.error("Error sending admin notification email:", error);
     }
   }
-  
+
   async getAllOrdersByUserId(req, res) {
     const { userId } = req.params;
     try {
