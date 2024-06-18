@@ -194,6 +194,37 @@ class OrderController {
     }
   }
 
+   async notifyAdmin(order) {
+    const adminEmail = "admin@example.com";
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "your-email@gmail.com",
+        pass: "your-email-password",
+      },
+    });
+
+    const mailOptions = {
+      from: "your-email@gmail.com",
+      to: adminEmail,
+      subject: "New Order Notification",
+      text: `A new order has been placed.
+            Status: ${order.status}
+            Created At: ${order.createdAt}
+            Total Price: ${order.total_price}
+            User ID: ${order.user_id}
+            Order ID: ${order._id}
+            `,
+    };
+
+    try {
+      await transporter.sendMail(mailOptions);
+      console.log("Admin notified of new order");
+    } catch (error) {
+      console.error("Error sending admin notification email:", error);
+    }
+  }
+  
   async getAllOrdersByUserId(req, res) {
     const { userId } = req.params;
     try {
