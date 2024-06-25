@@ -106,6 +106,47 @@ class AuthController {
     );
     res.status(200).json("Log out successfully");
   }
+  async updateUser(req, res) {
+    const upload = multer({ storage: storage }).single("avatar");
+    upload(req, res, async function (err) {
+      if (err instanceof multer.MulterError) {
+        return res.status(400).json({ error: "Lỗi tải lên tệp" });
+      } else if (err) {
+        return res.status(500).json({ error: "Lỗi tải lên tệp" });
+      } else {
+        try {
+          const userId = req.params.id;
+          const { username, email, password, address } = req.body;
+
+          if (email && !validator.isEmail(email)) {
+            return res.status(400).json({ error: "Định dạng email không hợp lệ" });
+          }
+
+          const user = await User.findById(userId);
+          if (!user) {
+            return res.status(404).json({ error: "Người dùng không tồn tại" });
+          }
+
+          if (username) user.username = username;
+          if (email) user.email = email;
+          if (address) user.address = address;
+          if (password) {
+            const salt = await bcrypt.genSalt(10);
+            user.password = await bcrypt.hash(password, salt);
+          }
+          if (req.file) user.avatar = req.file.originalname;
+
+          const updatedUser = await user.save();
+          return res.status(200).json({
+            message: "Cập nhật thông tin người dùng thành công.",
+            data: updatedUser,
+          });
+        } catch (error) {
+          res.status(500).json({ message: error.message });
+        }
+      }
+    });
+  }
 }
 
 module.exports = new AuthController();
