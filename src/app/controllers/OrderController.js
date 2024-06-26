@@ -197,7 +197,6 @@ class OrderController {
     }
   }
 
-  // gửi thông báo cho admin
   async notifyAdmin(order) {
     const adminEmail = "admin@example.com";
     const transporter = nodemailer.createTransport({
